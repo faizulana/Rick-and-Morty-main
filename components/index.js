@@ -1,4 +1,5 @@
 export * from './load-more-button'
 export * from './characters-card'
+export * from './episodes-card'
 export * from './locations-list'
 export * from './locations-card'

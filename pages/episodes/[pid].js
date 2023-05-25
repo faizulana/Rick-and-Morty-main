@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export default function CharacterProfile() {
+export default function EpisodeProfile() {
   const router = useRouter();
   const [data, setData] = useState({});
+  const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
-    fetch(`https://rickandmortyapi.com/api/character/${router.query.pid}`)
+    fetch(`https://rickandmortyapi.com/api/episode/${router.query.pid}`)
       .then((res) => res.json())
     // Логика, если эпизоды будут приходить массивом IRI
       .then(async (res) => {
@@ -29,6 +30,20 @@ export default function CharacterProfile() {
       .then((res) => setData(res));
   }, []);
 
+  useEffect(() => {
+    if (data !== {}) {
+      data.characters?.map((character) => {
+        const characterId = character.split('/character/')[1];
+
+        fetch(`https://rickandmortyapi.com/api/character/${characterId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            setCharacters((prev) => [...prev, data]);
+          });
+      });
+    }
+  }, [data]);
+
   console.log(data);
 
   return (
@@ -47,6 +62,8 @@ export default function CharacterProfile() {
           style={{ borderRadius: "9999px" }}
         />
         <h1>{data.name}</h1>
+        <h3>{data.episode}</h3>
+        <h3>{data.date}</h3>
         <div style={{ display: "grid", gridColumn: 2, gap: "10px" }}>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
@@ -56,12 +73,18 @@ export default function CharacterProfile() {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            <h3>Episodes</h3>
-            {data.episode?.map((episode) => (
-              <Link key={episode.id} href={`/e`}>
-                <div></div>
-              </Link>
-            ))}
+            <h3>characters</h3>
+            {characters?.map((character, index) => {
+              return (
+                <Link href={`/characters/${character.id}`} key={index}>
+                  <CharactersCard
+                    name={character.name}
+                    species={character.species}
+                    image={character.image}
+                  />
+                </Link>
+              );
+            })}
           </div>
         </div>
       </main>

@@ -1,6 +1,32 @@
 import Head from "next/head";
+import EpisodesCard from '../../components/episodes-card';
 
 export default function Episodes() {
+
+  const [data, setData] = useState([]);
+  const [info, setInfo] = useState();
+  const [page, setPage] = useState(1);
+  //const [episodes, setEpisodes] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+
+  useEffect(() => {
+    fetch(`https://rickandmortyapi.com/api/episode?page=${page}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setData((prev) => [...prev, ...res.results]);
+        setInfo(res.info);
+      });
+  }, [page]);
+
+  useEffect(() => {
+    fetch(`https://rickandmortyapi.com/api/episode?name=${searchValue}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.results);
+        setInfo(res.info);
+      });
+  }, [searchValue]);
+
   return (
     <>
       <Head>
@@ -9,7 +35,27 @@ export default function Episodes() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>Episodes</main>
+      <h1>Episodes</h1>
+      <input
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+
+      <main className={styles.main}>
+      {data.map((episode, index) => (
+          <Link href={`/episodes/${episode.id}`} key={episode.id}>
+            <EpisodesCard
+              name={episode.name}
+              date={episode.date}
+              episode={episode.episode}
+            />
+          </Link>
+        ))}
+        
+        {info?.next && (
+          <button onClick={() => setPage((prev) => ++prev)}>LOAD MORE</button>
+        )}
+      </main>
     </>
   );
 }
