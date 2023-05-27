@@ -63,7 +63,6 @@ export default function EpisodeProfile() {
         />
         <h1>{data.name}</h1>
         <h3>{data.episode}</h3>
-        <h3>{data.date}</h3>
         <div style={{ display: "grid", gridColumn: 2, gap: "10px" }}>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}

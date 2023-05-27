@@ -1,12 +1,14 @@
 import Head from "next/head";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import EpisodesCard from '../../components/episodes-card';
+import styles from "../../styles/Home.module.css";
 
 export default function Episodes() {
 
   const [data, setData] = useState([]);
   const [info, setInfo] = useState();
   const [page, setPage] = useState(1);
-  //const [episodes, setEpisodes] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
@@ -42,13 +44,14 @@ export default function Episodes() {
       />
 
       <main className={styles.main}>
-      {data.map((episode, index) => (
+      {data.map((episode) => (
           <Link href={`/episodes/${episode.id}`} key={episode.id}>
+            <div className={styles.card}>
             <EpisodesCard
               name={episode.name}
-              date={episode.date}
               episode={episode.episode}
             />
+            </div>
           </Link>
         ))}
         
